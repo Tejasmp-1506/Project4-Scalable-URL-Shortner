@@ -6,6 +6,9 @@ const urlModel = require("../models/urlModel")
 
 const baseUrl = "http://localhost:3000"
 
+
+//--------creating a short url from a long url-----------------------------------------------------------------------
+
 const createShortUrl = async function(req, res){
     try{   
     const {longUrl} = req.body
@@ -40,4 +43,28 @@ const createShortUrl = async function(req, res){
 }
 
 
-module.exports.createShortUrl = createShortUrl
+//---------get url from url code----------------------------------------------------------------------------------------------
+
+
+const getUrl = async function(req, res){
+   try{
+         const urlCode = req.params.urlCode
+
+         if(!urlCode) return res.status(400).send({status : false, msg : "please provide urlCode"})
+
+        const data = await urlModel.findOne({urlCode})
+
+        if(data){
+         res.status(200).send({status : false, data : data})
+        }else{
+         res.status(400).send({status : false, msg : "no url found"})
+        }
+      }
+   catch(err){
+        res.status(500).send({status: false, msg: err.message})
+   }
+}
+
+
+
+module.exports = {createShortUrl, getUrl }
